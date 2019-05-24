@@ -2,6 +2,8 @@
 var side = 20;
 var socket = io();
 
+var state = false;
+
 var weatherclient = "Summer";
 
 socket.on("exanak", function (w) {
@@ -12,6 +14,7 @@ function setup() {
     createCanvas(20 * side, 20 * side);
     background('blue');
 }
+
 
 function drawWeather(w) {
     var p = document.getElementById('seasson');
@@ -45,14 +48,14 @@ function drawMatrix(matrix) {
                     fill("green");
                 } else if (weatherclient === "Summer") {
                     fill("green");
-                }else if (weatherclient === "Spring") {
+                } else if (weatherclient === "Spring") {
                     fill("#9ACD32");
-                }else if (weatherclient === "Winter") {
+                } else if (weatherclient === "Winter") {
                     fill("#20B2AA");
-                }else if (weatherclient === "Autumn") {
+                } else if (weatherclient === "Autumn") {
                     fill("#808000");
                 }
-               
+
             }
             else if (matrix[y][x] == 2) {
                 if (weatherclient === "Spring") {
@@ -60,7 +63,7 @@ function drawMatrix(matrix) {
                 } else if (weatherclient !== "Spring") {
                     fill("yellow");
                 }
-            
+
             }
             else if (matrix[y][x] == 3) {
                 if (weatherclient === "Winter") {
@@ -68,7 +71,7 @@ function drawMatrix(matrix) {
                 } else if (weatherclient !== "Winter") {
                     fill("blue");
                 }
-              
+
             }
             else if (matrix[y][x] == 4) {
                 if (weatherclient === "Autumn") {
@@ -80,7 +83,16 @@ function drawMatrix(matrix) {
             else if (matrix[y][x] == 5) {
                 fill("orange");
             }
-            rect(x * side, y * side,side,side);
+            else if (matrix[y][x] == 6) {
+                fill("black");
+            }
+            else if (matrix[y][x] == 7) {
+                fill("pink");
+            }
+            else if (matrix[y][x] == 8) {
+                fill("white");
+            }
+            rect(x * side, y * side, side, side);
         }
     }
 }
@@ -88,3 +100,55 @@ function drawMatrix(matrix) {
 //yndunuma serveric matrixy ev kanchuma drawMatrix
 socket.on("matrix", drawMatrix);
 socket.on("exanak", drawWeather);
+
+function Firebutton() {
+    socket.emit('armagedon');
+}
+
+function mousePressed(){
+    var x = Math.floor(mouseX / side);
+    var y = Math.floor(mouseY / side);
+    arr = [x,y];
+    console.log(arr);
+    socket.emit("touch", arr);
+    state = true
+}
+
+
+function drawImage() {
+    if(state == true){
+        fill('grey');
+        var x = Math.floor(mouseX / side);
+        var y = Math.floor(mouseY / side);
+        arr = [x,y];
+        socket.emit("drawer", arr);
+
+    }
+  
+}
+
+function draw(){
+  
+    if (mouseIsPressed) {
+        if (mouseButton === LEFT) {
+            drawImage(); 
+          }
+      if (mouseButton === RIGHT) {
+        var x = Math.floor(mouseX / side);
+        var y = Math.floor(mouseY / side);
+        arr = [x,y];
+        socket.emit("right", arr);
+      }
+      if (mouseButton === CENTER) {
+        var x = Math.floor(mouseX / side);
+        var y = Math.floor(mouseY / side);
+        arr = [x,y];
+        socket.emit("center", arr);
+      }  
+
+    }
+}
+
+
+
+
